@@ -107,8 +107,8 @@
     (&key (header? nil))
     (declare (ignore header?)))
    (cad-output-tree
-    (&key (header? nil))
-    (declare (ignore header?)))
+    (&key (header? nil) (from-root? nil))
+    (declare (ignore header? from-root?)))
    (shape (&rest args)
 	  (declare (ignore args)))
    ))
@@ -625,6 +625,23 @@
                                                               (mapcar #'(lambda(point) (the (global-to-local* point)))
 								      (the vertex-list))))))))))))
 
+(define-lens (x3d ifs-output-mixin)()
+  :output-functions
+  ((shape
+    ()
+    (cl-who:with-html-output (*stream* nil :indent t)
+      (:|Shape|
+       (:|Appearance| (write-the material-properties))
+       ((:|IndexedFaceSet| :|solid| "FALSE"
+	  :|creaseAngle| (format nil "~a" (the crease-angle))
+	  :|coordIndex| (format nil "~{~{~a~^ ~}~^ -1 ~}" (the ifs-indices)))
+        ((:|Coordinate| :|point| (format nil "~{~{~a~^ ~}~^ ~}"
+                                     (map 'list #'(lambda(point) 
+                                                    (let ((point (the (global-to-local* point))))
+                                                      (list (get-x point) (get-y point) (get-z point))) )
+                                          (the ifs-array)))))))))))
+
+#+nil
 (define-lens (x3d ifs-output-mixin)()
   :output-functions
   ((shape
