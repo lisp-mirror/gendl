@@ -1,0 +1,34 @@
+
+stages:
+  - update
+  - build
+#  - inno
+# - mint
+#  - test
+#  - deploy
+
+  
+update:
+  stage: update
+  script:
+    - bash -x ./.ci-script.sh linux git-pull
+#    - bash -x ./.ci-script.sh windows rsync-from-manager
+
+    
+linux-build:
+  stage: build
+#  only:
+#    - master
+  script:
+    - bash -x ./.ci-script.sh linux build-gendl
+
+
+#windows-build:
+#  stage: build
+#  only:
+#    - master
+#  script:
+#    - bash -x ./.ci-script.sh windows build-gendl
+
+
+
